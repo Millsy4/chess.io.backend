@@ -60,7 +60,7 @@ public class UserController {
 	public ResponseEntity<User> createUser(@RequestBody User user) {
 		try {
 			User _user = userRepository
-					.save(new User(user.getUsername(), user.getPassword(), user.getName(), 0, 0, 0, "filler"));
+					.save(new User(user.getUsername(), user.getPassword(), user.getName(), user.getEmail(), 0, 0, 0, "https://via.placeholder.com/300x200"));
 			return new ResponseEntity<>(_user, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

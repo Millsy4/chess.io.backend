@@ -1,3 +1,3 @@
-insert into users values('cmills', 0, 'Christian Mills', 'p4ssw0rd', 'filler', 0, 0);
-insert into users values('mtorres',  0, 'Manny Torres', 'p4ssw0rd', 'filler', 0, 0);
-insert into users values('vpoghosyan', 0, 'Vahan Poghosyan', 'p4ssw0rd', 'filler', 0, 0);
+insert into users values('cmills', 'christian.mills@revature.net', 0, 'Christian Mills', 'p4ssw0rd', 'https://s3.us-east-2.amazonaws.com/chessio.images/1192391.jpg', 0, 0);
+insert into users values('mtorres', 'email@email.com', 0, 'Manny Torres', 'p4ssw0rd', 'https://via.placeholder.com/300x200', 0, 0);
+insert into users values('vpoghosyan', 'email@email.com', 0, 'Vahan Poghosyan', 'p4ssw0rd', 'https://via.placeholder.com/300x200', 0, 0);
