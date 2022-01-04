@@ -59,9 +59,15 @@ public class UserController {
 	@PostMapping("/users")
 	public ResponseEntity<User> createUser(@RequestBody User user) {
 		try {
-			User _user = userRepository
-					.save(new User(user.getUsername(), user.getPassword(), user.getName(), user.getEmail(), 0, 0, 0, "https://s3.us-east-2.amazonaws.com/chessio.images/4850728.jpg"));
-			return new ResponseEntity<>(_user, HttpStatus.CREATED);
+			Optional<User> userData = userRepository.findById(user.getUsername());
+			
+			if (userData.isEmpty()) {
+				User _user = userRepository
+						.save(new User(user.getUsername(), user.getPassword(), user.getName(), user.getEmail(), 0, 0, 0, "https://s3.us-east-2.amazonaws.com/chessio.images/4850728.jpg"));
+				return new ResponseEntity<>(_user, HttpStatus.CREATED);
+			} else {
+				return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
