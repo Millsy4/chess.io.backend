@@ -82,9 +82,9 @@ public class UserController {
 			Optional<User> userData = userRepository.findById(user.getUsername());
 
 			if (userData.isPresent()) {
-				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>(null, HttpStatus.I_AM_A_TEAPOT);
 			} else {
-				User _user = userRepository.save(new User(user.getUsername(), user.getPassword(), user.getName(),
+				User _user = userRepository.save(new User(user.getUsername(), user.getName(), user.getPassword(),
 						user.getEmail(), 0, 0, 0, "https://s3.us-east-2.amazonaws.com/chessio.images/4850728.jpg", 0));
 				return new ResponseEntity<>(_user, HttpStatus.CREATED);
 			}
