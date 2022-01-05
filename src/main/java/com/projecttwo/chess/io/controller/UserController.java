@@ -94,20 +94,13 @@ public class UserController {
 		}
 	}
 
-	@PutMapping("/users/{username}")
+	@PostMapping("/users/photoloc/{username}")
 	public ResponseEntity<User> updateUser(@PathVariable("username") String username, @RequestBody User user) {
 		Optional<User> userData = userRepository.findById(username);
 
 		if (userData.isPresent()) {
 			User _user = userData.get();
-			_user.setUsername(user.getUsername());
-			_user.setPassword(user.getPassword());
-			_user.setName(user.getName());
-			_user.setWins(user.getWins());
-			_user.setLosses(user.getLosses());
-			_user.setTies(user.getTies());
 			_user.setPhotoLoc(user.getPhotoLoc());
-			_user.setLoginCode(user.getLoginCode());
 			return new ResponseEntity<>(userRepository.save(_user), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
