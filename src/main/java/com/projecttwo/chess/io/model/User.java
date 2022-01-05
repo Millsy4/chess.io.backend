@@ -45,4 +45,7 @@ public class User {
 	@Column(name = "photoLoc")
 	private String photoLoc;
 	
+	@Column(name = "loginCode")
+	private int loginCode;
+	
 }

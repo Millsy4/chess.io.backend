@@ -28,46 +28,67 @@ public class UserController {
 	@Autowired
 	UserRepository userRepository;
 
-	@GetMapping("/users")
-	public ResponseEntity<List<User>> getAllUsers() {
-		try {
-			List<User> users = new ArrayList<User>();
-
-			userRepository.findAll().forEach(users::add);
-
-			if (users.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
-
-			return new ResponseEntity<>(users, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+//	@GetMapping("/users")
+//	public ResponseEntity<List<User>> getAllUsers() {
+//		try {
+//			List<User> users = new ArrayList<User>();
+//
+//			userRepository.findAll().forEach(users::add);
+//			
+//			if (users.isEmpty()) {
+//				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//			}
+//
+//			return new ResponseEntity<>(users, HttpStatus.OK);
+//		} catch (Exception e) {
+//			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
 
 	@GetMapping("/users/{username}")
 	public ResponseEntity<User> getUserById(@PathVariable("username") String username) {
-		Optional<User> userData = userRepository.findById(username);
 
-		if (userData.isPresent()) {
-			return new ResponseEntity<>(userData.get(), HttpStatus.OK);
+		Optional<User> userData = userRepository.findById(username);
+		User _user = userData.get();
+		if (_user.getLoginCode() != 0) {
+			if (userData.isPresent()) {
+				return new ResponseEntity<>(userData.get(), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+		} else {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+	}
+
+	@PostMapping("/users/login")
+	public ResponseEntity<User> getUserLogin(@RequestBody User user) {
+		Optional<User> userData = userRepository.findById(user.getUsername());
+		User _user = userData.get();
+		if (_user.getPassword().equals(user.getPassword())) {
+			double randomizer = (Math.random() * 1000000);
+			int randomCode = (int) (randomizer);
+			_user.setLoginCode(randomCode);
+			return new ResponseEntity<>(_user, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 
+
 	@PostMapping("/users")
 	public ResponseEntity<User> createUser(@RequestBody User user) {
 		try {
 			Optional<User> userData = userRepository.findById(user.getUsername());
-			
+
 			if (userData.isPresent()) {
-				return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 			} else {
-				User _user = userRepository
-						.save(new User(user.getUsername(), user.getPassword(), user.getName(), user.getEmail(), 0, 0, 0, "https://s3.us-east-2.amazonaws.com/chessio.images/4850728.jpg"));
+				User _user = userRepository.save(new User(user.getUsername(), user.getPassword(), user.getName(),
+						user.getEmail(), 0, 0, 0, "https://s3.us-east-2.amazonaws.com/chessio.images/4850728.jpg", 0));
 				return new ResponseEntity<>(_user, HttpStatus.CREATED);
 			}
+
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -86,6 +107,7 @@ public class UserController {
 			_user.setLosses(user.getLosses());
 			_user.setTies(user.getTies());
 			_user.setPhotoLoc(user.getPhotoLoc());
+			_user.setLoginCode(user.getLoginCode());
 			return new ResponseEntity<>(userRepository.save(_user), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
