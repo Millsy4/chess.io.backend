@@ -28,14 +28,10 @@ public class UserController {
 	@Autowired
 	UserRepository userRepository;
 
-	@GetMapping("/users")
+	@GetMapping("/users/showall")
 	public ResponseEntity<List<User>> getAllUsers() {
 		try {
 			List<User> users = new ArrayList<User>();
-			
-			// username
-			// name
-			// profile picutre
 			
 			userRepository.findAll().forEach(users::add);
 			
