@@ -1,8 +1,11 @@
 package com.projecttwo.chess.io.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.security.auth.Subject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,17 +31,22 @@ public class UserController {
 	@Autowired
 	UserRepository userRepository;
 
-	@GetMapping("/showall")
-	public ResponseEntity<List<User>> getAllUsers() {
+	@GetMapping("/showall/{username}")
+	public ResponseEntity<List<User>> getAllUsers(@PathVariable("username") String username, Principal principal) {
 			List<User> users = new ArrayList<User>();
-			
-			userRepository.findAll().forEach(users::add);
-			
-			if (users.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			} else {
-				return new ResponseEntity<>(users, HttpStatus.OK);
-			}
+				
+				List<User> _users = userRepository.findAll();
+				
+				for (int i = 0; i < _users.size(); i++) {
+					User tempUser = new User(_users.get(i).getUsername(), _users.get(i).getName(), _users.get(i).getPhotoLoc());
+					users.add(tempUser);
+				};
+				
+				if (users.isEmpty()) {
+					return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+				} else {
+					return new ResponseEntity<>(users, HttpStatus.OK);
+				}
 
 	}
 
@@ -66,6 +74,7 @@ public class UserController {
 			double randomizer = (Math.random() * 1000000);
 			int randomCode = (int) (randomizer);
 			_user.setLoginCode(randomCode);
+			
 			return new ResponseEntity<>(_user, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -99,6 +108,42 @@ public class UserController {
 			User _user = userData.get();
 			_user.setPhotoLoc(user.getPhotoLoc());
 			return new ResponseEntity<>(userRepository.save(_user), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+	}
+	
+	@PostMapping("/users/wins/{username}")
+	public ResponseEntity<User> updateUserWins(@PathVariable("username") String username, @RequestBody User user) {
+		Optional<User> userData = userRepository.findById(username);
+
+		if (userData.isPresent()) {
+			User _user = userData.get();
+			_user.setWins((user.getWins() + 1));
+			if (_user.getPassword().equals(user.getPassword())) {
+				return new ResponseEntity<>(userRepository.save(_user), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@PostMapping("/users/losses/{username}")
+	public ResponseEntity<User> updateUserLosses(@PathVariable("username") String username, @RequestBody User user) {
+		Optional<User> userData = userRepository.findById(username);
+
+		if (userData.isPresent()) {
+			User _user = userData.get();
+			_user.setLosses((user.getLosses() + 1));
+			
+			if (_user.getPassword().equals(user.getPassword())) {
+				return new ResponseEntity<>(userRepository.save(_user), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}

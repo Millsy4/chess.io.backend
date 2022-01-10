@@ -47,5 +47,14 @@ public class User {
 	
 	@Column(name = "loginCode")
 	private int loginCode;
+
+	public User(String username, String name, String photoLoc) {
+		super();
+		this.username = username;
+		this.name = name;
+		this.photoLoc = photoLoc;
+	}
+	
+	
 	
 }
