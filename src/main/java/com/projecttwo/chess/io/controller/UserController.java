@@ -1,11 +1,10 @@
 package com.projecttwo.chess.io.controller;
 
-import java.security.Principal;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.security.auth.Subject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,9 +30,14 @@ public class UserController {
 	@Autowired
 	UserRepository userRepository;
 
-	@GetMapping("/showall/{username}")
-	public ResponseEntity<List<User>> getAllUsers(@PathVariable("username") String username, Principal principal) {
-			List<User> users = new ArrayList<User>();
+	@PostMapping("/showall")
+	public ResponseEntity<List<User>> getAllUsers(@RequestBody User user) {
+		Optional<User> userData = userRepository.findById(user.getUsername());
+		
+		if (userData.isPresent()) {
+			User _user_ = userData.get();
+			if (_user_.getPassword().equals(user.getPassword())) {
+				List<User> users = new ArrayList<User>();
 				
 				List<User> _users = userRepository.findAll();
 				
@@ -47,37 +51,48 @@ public class UserController {
 				} else {
 					return new ResponseEntity<>(users, HttpStatus.OK);
 				}
-
-	}
-
-	@GetMapping("/users/{username}")
-	public ResponseEntity<User> getUserById(@PathVariable("username") String username) {
-
-		Optional<User> userData = userRepository.findById(username);
-		User _user = userData.get();
-		if (_user.getLoginCode() != 0) {
-			if (userData.isPresent()) {
-				return new ResponseEntity<>(userData.get(), HttpStatus.OK);
+				
 			} else {
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403
 			}
 		} else {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404
 		}
+
 	}
+
+//	@GetMapping("/users/{username}")
+//	public ResponseEntity<User> getUserById(@PathVariable("username") String username) {
+//
+//		Optional<User> userData = userRepository.findById(username);
+//		User _user = userData.get();
+//		if (_user.getLoginCode() != 0) {
+//			if (userData.isPresent()) {
+//				return new ResponseEntity<>(userData.get(), HttpStatus.OK);
+//			} else {
+//				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//			}
+//		} else {
+//			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//		}
+//	}
 
 	@PostMapping("/users/login")
 	public ResponseEntity<User> getUserLogin(@RequestBody User user) {
 		Optional<User> userData = userRepository.findById(user.getUsername());
-		User _user = userData.get();
-		if (_user.getPassword().equals(user.getPassword())) {
-			double randomizer = (Math.random() * 1000000);
-			int randomCode = (int) (randomizer);
-			_user.setLoginCode(randomCode);
-			
-			return new ResponseEntity<>(_user, HttpStatus.OK);
+		if (userData.isPresent()) {
+			User _user = userData.get();
+			if (_user.getPassword().equals(user.getPassword())) {
+				double randomizer = (Math.random() * 1000000);
+				int randomCode = (int) (randomizer);
+				_user.setLoginCode(randomCode);
+				
+				return new ResponseEntity<>(_user, HttpStatus.OK); // 200
+			} else {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403
+			}
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404
 		}
 	}
 
@@ -150,13 +165,13 @@ public class UserController {
 
 	}
 
-	@DeleteMapping("/users/{username}")
-	public ResponseEntity<HttpStatus> deleteUser(@PathVariable("username") String username) {
-		try {
-			userRepository.deleteById(username);
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+//	@DeleteMapping("/users/{username}")
+//	public ResponseEntity<HttpStatus> deleteUser(@PathVariable("username") String username) {
+//		try {
+//			userRepository.deleteById(username);
+//			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//		} catch (Exception e) {
+//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//	}
 }
