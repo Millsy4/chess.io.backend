@@ -61,21 +61,16 @@ public class UserController {
 
 	}
 
-//	@GetMapping("/users/{username}")
-//	public ResponseEntity<User> getUserById(@PathVariable("username") String username) {
-//
-//		Optional<User> userData = userRepository.findById(username);
-//		User _user = userData.get();
-//		if (_user.getLoginCode() != 0) {
-//			if (userData.isPresent()) {
-//				return new ResponseEntity<>(userData.get(), HttpStatus.OK);
-//			} else {
-//				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//			}
-//		} else {
-//			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-//		}
-//	}
+	@GetMapping("/users/{username}")
+	public String getUserById(@PathVariable("username") String username) {
+
+		Optional<User> userData = userRepository.findById(username);
+			if (userData.isPresent()) {
+				return "Username exists";
+			} else {
+				return "Username is available";
+			}
+	}
 
 	@PostMapping("/users/login")
 	public ResponseEntity<User> getUserLogin(@RequestBody User user) {
