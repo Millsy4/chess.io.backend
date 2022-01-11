@@ -27,7 +27,7 @@ pipeline {
         }
          stage('DockerRun') {
       steps {
-        sh 'docker run -p 9090:9090 millsy4/chess.io.backend'
+        sh 'docker run -d -p 9090:9090 millsy4/chess.io.backend'
       }
         }
   }
