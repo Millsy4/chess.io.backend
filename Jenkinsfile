@@ -22,12 +22,12 @@ pipeline {
         }
         stage('DockerBuild') {
       steps {
-        sh 'docker build -t millsy4/user-rest:latest .'
+        sh 'docker build -t millsy4/chess.io.backend:latest .'
       }
         }
          stage('DockerRun') {
       steps {
-        sh 'docker run -p 9090:9090 millsy4/user-rest'
+        sh 'docker run -p 9090:9090 millsy4/chess.io.backend'
       }
         }
   }
