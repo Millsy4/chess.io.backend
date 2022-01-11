@@ -1,0 +1,4 @@
+com\projecttwo\chess\io\model\User.class
+com\projecttwo\chess\io\repository\UserRepository.class
+com\projecttwo\chess\io\Application.class
+com\projecttwo\chess\io\controller\UserController.class
