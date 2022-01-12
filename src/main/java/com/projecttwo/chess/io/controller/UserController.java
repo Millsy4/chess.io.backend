@@ -42,8 +42,12 @@ public class UserController {
 				List<User> _users = userRepository.findAll();
 				
 				for (int i = 0; i < _users.size(); i++) {
-					User tempUser = new User(_users.get(i).getUsername(), _users.get(i).getName(), _users.get(i).getPhotoLoc());
-					users.add(tempUser);
+					if (_users.get(i).getUsername().equals("knights")) {
+						System.out.println("Admin user removed from data");
+					} else {
+						User tempUser = new User(_users.get(i).getUsername(), _users.get(i).getName(), _users.get(i).getPhotoLoc());
+						users.add(tempUser);
+					}
 				};
 				
 				if (users.isEmpty()) {
@@ -58,7 +62,6 @@ public class UserController {
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404
 		}
-
 	}
 
 	@GetMapping("/users/{username}")
