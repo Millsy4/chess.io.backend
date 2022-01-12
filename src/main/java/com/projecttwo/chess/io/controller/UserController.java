@@ -128,39 +128,51 @@ public class UserController {
 	}
 	
 	@PostMapping("/users/wins/{username}")
-	public ResponseEntity<User> updateUserWins(@PathVariable("username") String username, @RequestBody User user) {
+	public ResponseEntity<User> updateUserWins(@PathVariable("username") String username) {
 		Optional<User> userData = userRepository.findById(username);
-
 		if (userData.isPresent()) {
-			User _user = userData.get();
-			_user.setWins((user.getWins() + 1));
-			if (_user.getPassword().equals(user.getPassword())) {
-				return new ResponseEntity<>(userRepository.save(_user), HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-			}
+			System.out.println(userData);
+			User user = userData.get();
+			System.out.println(user);
+			user.setWins(user.getWins() + 1);
+			System.out.println(user);
+			return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
 	
 	@PostMapping("/users/losses/{username}")
-	public ResponseEntity<User> updateUserLosses(@PathVariable("username") String username, @RequestBody User user) {
+	public ResponseEntity<User> updateUserLosses(@PathVariable("username") String username) {
 		Optional<User> userData = userRepository.findById(username);
-
+		
+		
+		
 		if (userData.isPresent()) {
-			User _user = userData.get();
-			_user.setLosses((user.getLosses() + 1));
-			
-			if (_user.getPassword().equals(user.getPassword())) {
-				return new ResponseEntity<>(userRepository.save(_user), HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-			}
+			System.out.println(userData);
+			User user = userData.get();
+			System.out.println(user);
+			user.setLosses(user.getLosses() + 1);
+			System.out.println(user);
+			return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-
+	}
+	
+	@PostMapping("/users/ties/{username}")
+	public ResponseEntity<User> updateUserTies(@PathVariable("username") String username) {
+		Optional<User> userData = userRepository.findById(username);
+		if (userData.isPresent()) {
+			System.out.println(userData);
+			User user = userData.get();
+			System.out.println(user);
+			user.setTies(user.getTies() + 1);
+			System.out.println(user);
+			return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 
 //	@DeleteMapping("/users/{username}")
