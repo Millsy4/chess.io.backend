@@ -140,42 +140,64 @@ public class UserController {
 	}
 	
 	@PostMapping("/users/wins/{username}")
-	public ResponseEntity<User> updateUserWins(@PathVariable("username") String username) {
+	public ResponseEntity<User> updateUserWins(@PathVariable("username") String username, @RequestBody User user) {
 		Optional<User> userData = userRepository.findById(username);
-		if (userData.isPresent()) {
-			User user = userData.get();
-			user.setWins(user.getWins() + 1);
-			return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
+		Optional<User> adminData = userRepository.findById(user.getUsername());
+		
+		User admin = adminData.get();
+		
+		
+		if (admin.getPassword().equals(user.getPassword())) {
+			if (userData.isPresent()) {
+				User _user = userData.get();
+				_user.setWins(_user.getWins() + 1);
+				return new ResponseEntity<>(userRepository.save(_user), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 	}
 	
 	@PostMapping("/users/losses/{username}")
-	public ResponseEntity<User> updateUserLosses(@PathVariable("username") String username) {
-		Optional<User> userData = userRepository.findById(username);
+	public ResponseEntity<User> updateUserLosses(@PathVariable("username") String username, @RequestBody User user) {
 		
-		if (userData.isPresent()) {
-			User user = userData.get();
-			user.setLosses(user.getLosses() + 1);
-			return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
+		Optional<User> userData = userRepository.findById(username);
+		Optional<User> adminData = userRepository.findById(user.getUsername());
+		
+		User admin = adminData.get();
+		
+		if (admin.getPassword().equals(user.getPassword())) {
+			if (userData.isPresent()) {
+				User _user = userData.get();
+				_user.setLosses(_user.getLosses() + 1);
+				return new ResponseEntity<>(userRepository.save(_user), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 	}
 	
 	@PostMapping("/users/ties/{username}")
-	public ResponseEntity<User> updateUserTies(@PathVariable("username") String username) {
+	public ResponseEntity<User> updateUserTies(@PathVariable("username") String username, @RequestBody User user) {
 		Optional<User> userData = userRepository.findById(username);
-		if (userData.isPresent()) {
-			System.out.println(userData);
-			User user = userData.get();
-			System.out.println(user);
-			user.setTies(user.getTies() + 1);
-			System.out.println(user);
-			return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
+		Optional<User> adminData = userRepository.findById(user.getUsername());
+		
+		User admin = adminData.get();
+		
+		if (admin.getPassword().equals(user.getPassword())) {
+			if (userData.isPresent()) {
+				User _user = userData.get();
+				_user.setTies(_user.getTies() + 1);
+				return new ResponseEntity<>(userRepository.save(_user), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 	}
 
