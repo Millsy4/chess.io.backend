@@ -131,11 +131,8 @@ public class UserController {
 	public ResponseEntity<User> updateUserWins(@PathVariable("username") String username) {
 		Optional<User> userData = userRepository.findById(username);
 		if (userData.isPresent()) {
-			System.out.println(userData);
 			User user = userData.get();
-			System.out.println(user);
 			user.setWins(user.getWins() + 1);
-			System.out.println(user);
 			return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -146,14 +143,9 @@ public class UserController {
 	public ResponseEntity<User> updateUserLosses(@PathVariable("username") String username) {
 		Optional<User> userData = userRepository.findById(username);
 		
-		
-		
 		if (userData.isPresent()) {
-			System.out.println(userData);
 			User user = userData.get();
-			System.out.println(user);
 			user.setLosses(user.getLosses() + 1);
-			System.out.println(user);
 			return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -175,6 +167,24 @@ public class UserController {
 		}
 	}
 
+	@PostMapping("/users/ingame/{username}")
+	public ResponseEntity<User> updateUserInGame(@PathVariable("username") String username) {
+		Optional<User> userData = userRepository.findById(username);
+		if (userData.isPresent()) {
+			User user = userData.get();
+			boolean isUserInGame = user.isInGame();
+			if (isUserInGame == false) {
+				user.setInGame(true);
+				return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
+			} else {
+				user.setInGame(false);
+				return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
+			}
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
 //	@DeleteMapping("/users/{username}")
 //	public ResponseEntity<HttpStatus> deleteUser(@PathVariable("username") String username) {
 //		try {
