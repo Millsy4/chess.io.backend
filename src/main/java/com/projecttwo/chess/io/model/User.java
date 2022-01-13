@@ -47,6 +47,9 @@ public class User {
 	
 	@Column(name = "loginCode")
 	private int loginCode;
+	
+	@Column(name = "isInGame")
+	private boolean isInGame;
 
 	public User(String username, String name, String photoLoc) {
 		super();

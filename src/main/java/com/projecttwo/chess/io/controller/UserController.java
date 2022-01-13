@@ -104,7 +104,7 @@ public class UserController {
 				return new ResponseEntity<>(null, HttpStatus.I_AM_A_TEAPOT);
 			} else {
 				User _user = userRepository.save(new User(user.getUsername(), user.getName(), user.getPassword(),
-						user.getEmail(), 0, 0, 0, "https://s3.us-east-2.amazonaws.com/chessio.images/4850728.jpg", 0));
+						user.getEmail(), 0, 0, 0, "https://s3.us-east-2.amazonaws.com/chessio.images/4850728.jpg", 0, false));
 				return new ResponseEntity<>(_user, HttpStatus.CREATED);
 			}
 
