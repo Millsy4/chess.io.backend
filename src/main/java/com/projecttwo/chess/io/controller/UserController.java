@@ -81,11 +81,23 @@ public class UserController {
 		if (userData.isPresent()) {
 			User _user = userData.get();
 			if (_user.getPassword().equals(user.getPassword())) {
-				double randomizer = (Math.random() * 1000000);
-				int randomCode = (int) (randomizer);
-				_user.setLoginCode(randomCode);
+				boolean isUserInGame = _user.isInGame();
 				
-				return new ResponseEntity<>(_user, HttpStatus.OK); // 200
+				if (isUserInGame == true) {
+					_user.setInGame(false);
+					
+					double randomizer = (Math.random() * 1000000);
+					int randomCode = (int) (randomizer);
+					_user.setLoginCode(randomCode);
+					
+					return new ResponseEntity<>(userRepository.save(_user), HttpStatus.OK); // 200
+				} else {
+					double randomizer = (Math.random() * 1000000);
+					int randomCode = (int) (randomizer);
+					_user.setLoginCode(randomCode);
+					
+					return new ResponseEntity<>(userRepository.save(_user), HttpStatus.OK); // 200
+				}
 			} else {
 				return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403
 			}
